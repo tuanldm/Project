@@ -1,0 +1,61 @@
+osKernelStart()														Bắt đầu RTOS
+
+osThreadId														Đặt ID Mask
+
+osThreadDef(<Đặt tên Task>, <Đặt tên hàm>, <Mức ưu tiên>, <Phiên bản tối đa của Task>, <Kích thước Task (Stack)>)		
+
+osThreadCreate(osThread(<Đặt tên Task>), <tham số truyền vào>)								Tạo 1 luồng mới
+
+osThreadTerminal(<ID Mask>)												Kết thúc 1 luồng
+
+osDelay(<ms>)														Tạm dừng luồng trong 1 khoảng thời gian 
+
+osThreadSuspend(<ID Mask>)												Treo/ngừng 1 luồng cho đến khi nhận được tín hiệu osThreadResume()
+
+osThreadResume(<ID Mask>)												Tiếp tục luồng bị Suspend
+
+
+--------------
+
+
+osThreadId <Đặt tên MASK>;													osThreadId Mask_A;
+																osThreadId Mask_B;
+int main(){
+	//Setup Task
+	osThreadDef(<Đặt tên Task>, <Đặt tên hàm>, <Mức ưu tiên>, <Phiên bản tối đa của Task>, <Kích thước Task (Stack)>);	osThreadDef(Task_01, Func_01, osPriorityNormal, 0, 128);
+	<Đặt tên MASK> = osThreadCreate(osThread(<Đặt tên Task>), <Tham số truyền vào>);					Mask_A = osThreadCreate(osThread(Task_01), NULL);
+
+																osThreadDef(Task_02, Func_02, osPriorityLow, 0, 128);
+																Mask_B = osThreadCreate(osThread(Task_02), NULL);
+
+	osKernelStart(); 	//Bắt đầu RTOS
+	
+	while(1){}
+}
+
+void Func_01(void const * argument){
+	
+	while(1){
+		osDelay(100); //ms
+	}
+}
+
+void Func_02(void const * argument){
+	
+	for (;;){
+		osDelay(100); //ms
+	}
+	osTerminal(NULL);  //NULL là tự kết thúc chính nó  	osTerminal(<Đặt tên MASK>); //parametter là ID Mask muốn xóa (có thể xóa của Mask khác)
+}
+
+
+
+
+
+
+
+
+
+
+
+
